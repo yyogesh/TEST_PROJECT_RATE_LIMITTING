@@ -1,0 +1,27 @@
+### Test Rate Limiting Middleware
+### This file can be used with REST Client extension in VS Code
+### Or use it as a reference for manual testing
+
+@baseUrl = https://localhost:44301
+@apiPath = /api/test
+
+### Test 1: Make a normal request (should succeed)
+GET {{baseUrl}}{{apiPath}}
+Accept: application/json
+
+### Test 2: Make multiple requests quickly to trigger rate limit
+### Copy and paste this request multiple times (or use a loop)
+GET {{baseUrl}}{{apiPath}}
+Accept: application/json
+
+### Test 3: Check rate limit headers
+GET {{baseUrl}}{{apiPath}}
+Accept: application/json
+
+### Test 4: Test excluded path (should not be rate limited)
+GET {{baseUrl}}/health
+Accept: application/json
+
+### Test 5: Test another excluded path
+GET {{baseUrl}}/swagger
+Accept: application/json
