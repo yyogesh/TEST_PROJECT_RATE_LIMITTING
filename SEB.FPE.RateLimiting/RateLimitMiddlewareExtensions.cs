@@ -24,7 +24,9 @@ namespace SEB.FPE.RateLimiting
             var rateLimitSection = configuration.GetSection("RateLimit");
             services.Configure<RateLimitOptions>(rateLimitSection);
 
-            var options = rateLimitSection.Get<RateLimitOptions>() ?? new RateLimitOptions();
+            // Get options for storage type decision
+            var options = new RateLimitOptions();
+            rateLimitSection.Bind(options);
 
             // Register storage based on configuration
             if (options.StorageType?.Equals("SqlServer", StringComparison.OrdinalIgnoreCase) == true)

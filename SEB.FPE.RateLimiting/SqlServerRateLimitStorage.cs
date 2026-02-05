@@ -88,7 +88,9 @@ namespace SEB.FPE.RateLimiting
             try
             {
                 await _dbContext.SaveChangesAsync();
-                return entry.RequestCount <= permitLimit;
+                // Return true only if request count is strictly less than permit limit
+                // If count equals limit, the request should be blocked
+                return entry.RequestCount < permitLimit;
             }
             catch (DbUpdateException)
             {
@@ -108,7 +110,8 @@ namespace SEB.FPE.RateLimiting
                         existingEntry.LastRequestAt = now;
                         await _dbContext.SaveChangesAsync();
                     }
-                    return existingEntry.RequestCount <= permitLimit;
+                    // Return true only if request count is strictly less than permit limit
+                    return existingEntry.RequestCount < permitLimit;
                 }
                 else
                 {

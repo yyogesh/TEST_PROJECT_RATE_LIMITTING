@@ -94,7 +94,9 @@ namespace SEB.FPE.RateLimiting
                     return existing;
                 });
 
-            return Task.FromResult(entry.RequestCount <= permitLimit);
+            // Return true only if request count is strictly less than permit limit
+            // If count equals limit, the request should be blocked
+            return Task.FromResult(entry.RequestCount < permitLimit);
         }
 
         public Task CleanupExpiredEntriesAsync()

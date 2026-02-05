@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "d:\\Ysquare\\DOTNET\\Rate_Limitting\\SEB.FPE.RateLimiting\\SEB.FPE.RateLimiting.csproj": {}
+    "C:\\Users\\Yogesh\\Downloads\\FPE\\aspnet-core\\src\\SEB.FPE.Telemetry\\SEB.FPE.Telemetry.csproj": {}
   },
   "projects": {
-    "d:\\Ysquare\\DOTNET\\Rate_Limitting\\SEB.FPE.RateLimiting\\SEB.FPE.RateLimiting.csproj": {
-      "version": "1.0.0",
+    "C:\\Users\\Yogesh\\Downloads\\FPE\\aspnet-core\\src\\SEB.FPE.Telemetry\\SEB.FPE.Telemetry.csproj": {
+      "version": "8.0.0",
       "restore": {
-        "projectUniqueName": "d:\\Ysquare\\DOTNET\\Rate_Limitting\\SEB.FPE.RateLimiting\\SEB.FPE.RateLimiting.csproj",
-        "projectName": "SEB.FPE.RateLimiting",
-        "projectPath": "d:\\Ysquare\\DOTNET\\Rate_Limitting\\SEB.FPE.RateLimiting\\SEB.FPE.RateLimiting.csproj",
+        "projectUniqueName": "C:\\Users\\Yogesh\\Downloads\\FPE\\aspnet-core\\src\\SEB.FPE.Telemetry\\SEB.FPE.Telemetry.csproj",
+        "projectName": "SEB.FPE.Telemetry",
+        "projectPath": "C:\\Users\\Yogesh\\Downloads\\FPE\\aspnet-core\\src\\SEB.FPE.Telemetry\\SEB.FPE.Telemetry.csproj",
         "packagesPath": "C:\\Users\\Yogesh\\.nuget\\packages\\",
-        "outputPath": "d:\\Ysquare\\DOTNET\\Rate_Limitting\\SEB.FPE.RateLimiting\\obj\\",
+        "outputPath": "C:\\Users\\Yogesh\\Downloads\\FPE\\aspnet-core\\src\\SEB.FPE.Telemetry\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Yogesh\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -44,21 +44,17 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
-            "Abp": {
+            "Microsoft.ApplicationInsights.AspNetCore": {
               "target": "Package",
-              "version": "[9.0.0, )"
+              "version": "[2.23.0, )"
             },
             "Microsoft.AspNetCore.Http.Abstractions": {
               "target": "Package",
               "version": "[2.2.0, )"
             },
-            "Microsoft.EntityFrameworkCore": {
+            "Microsoft.AspNetCore.Routing": {
               "target": "Package",
-              "version": "[8.0.8, )"
-            },
-            "Microsoft.EntityFrameworkCore.SqlServer": {
-              "target": "Package",
-              "version": "[8.0.8, )"
+              "version": "[2.2.2, )"
             },
             "Microsoft.Extensions.Configuration.Abstractions": {
               "target": "Package",
@@ -77,6 +73,10 @@
               "version": "[8.0.0, )"
             },
             "Microsoft.Extensions.Options.ConfigurationExtensions": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "System.Text.Json": {
               "target": "Package",
               "version": "[8.0.0, )"
             }
