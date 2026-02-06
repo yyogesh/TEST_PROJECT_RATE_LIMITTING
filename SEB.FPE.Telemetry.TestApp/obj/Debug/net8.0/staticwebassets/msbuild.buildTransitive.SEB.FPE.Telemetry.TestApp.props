@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\buildMultiTargeting\SEB.FPE.Telemetry.TestApp.props" />
+</Project>

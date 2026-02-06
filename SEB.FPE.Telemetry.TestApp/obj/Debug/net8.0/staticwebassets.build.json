@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "uGJm1OqADk+DEKdUIZMnJ2g9KCc0tfMOhCcbCGg3nL8=",
+  "Source": "SEB.FPE.Telemetry.TestApp",
+  "BasePath": "_content/SEB.FPE.Telemetry.TestApp",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
