@@ -7,8 +7,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -77,12 +79,23 @@ namespace SEB.FPE.Telemetry
 
             var startTime = DateTime.UtcNow;
             var requestUrl = $"{context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}";
+            
+            // Generate correlation/request ID for tracking
+            var correlationId = context.Request.Headers["X-Correlation-ID"].FirstOrDefault() 
+                ?? context.TraceIdentifier 
+                ?? Guid.NewGuid().ToString();
+            context.Items["CorrelationId"] = correlationId;
+            
             var requestTelemetry = new RequestTelemetry
             {
                 Name = $"{context.Request.Method} {context.Request.Path}",
                 Url = new Uri(requestUrl),
-                Timestamp = startTime
+                Timestamp = startTime,
+                Id = correlationId
             };
+            
+            // Set correlation ID in response headers
+            context.Response.Headers["X-Correlation-ID"] = correlationId;
 
             // Capture request information
             if (_options.LogRequests)
@@ -203,6 +216,78 @@ namespace SEB.FPE.Telemetry
             requestTelemetry.Properties["RequestContentType"] = context.Request.ContentType ?? "";
             requestTelemetry.Properties["RequestContentLength"] = context.Request.ContentLength?.ToString() ?? "0";
             requestTelemetry.Properties["RequestTimestamp"] = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff");
+            requestTelemetry.Properties["CorrelationId"] = context.Items["CorrelationId"]?.ToString() ?? "";
+            requestTelemetry.Properties["TraceId"] = context.TraceIdentifier;
+            
+            // Capture user identity and claims for audit
+            if (_options.IncludeUserIdentity && context.User?.Identity != null)
+            {
+                requestTelemetry.Properties["IsAuthenticated"] = context.User.Identity.IsAuthenticated.ToString();
+                requestTelemetry.Properties["AuthenticationType"] = context.User.Identity.AuthenticationType ?? "";
+                requestTelemetry.Properties["UserName"] = context.User.Identity.Name ?? "";
+                
+                // Capture user ID from claims
+                var userIdClaim = context.User.FindFirst(ClaimTypes.NameIdentifier) 
+                    ?? context.User.FindFirst("sub") 
+                    ?? context.User.FindFirst("user_id");
+                if (userIdClaim != null)
+                {
+                    requestTelemetry.Properties["UserId"] = userIdClaim.Value;
+                }
+                
+                // Capture tenant ID if available
+                var tenantIdClaim = context.User.FindFirst("tenant_id") 
+                    ?? context.User.FindFirst("TenantId");
+                if (tenantIdClaim != null)
+                {
+                    requestTelemetry.Properties["TenantId"] = tenantIdClaim.Value;
+                }
+                
+                // Capture email if available
+                var emailClaim = context.User.FindFirst(ClaimTypes.Email) 
+                    ?? context.User.FindFirst("email");
+                if (emailClaim != null)
+                {
+                    requestTelemetry.Properties["UserEmail"] = emailClaim.Value;
+                }
+                
+                // Capture roles
+                var roles = context.User.Claims
+                    .Where(c => c.Type == ClaimTypes.Role || c.Type == "role")
+                    .Select(c => c.Value)
+                    .ToList();
+                if (roles.Count > 0)
+                {
+                    requestTelemetry.Properties["UserRoles"] = JsonSerializer.Serialize(roles);
+                }
+                
+                // Capture all claims if needed (for detailed audit)
+                if (_options.IncludeRequestHeaders)
+                {
+                    var claims = context.User.Claims
+                        .Select(c => new { Type = c.Type, Value = MaskSensitiveClaim(c.Type, c.Value) })
+                        .ToDictionary(c => c.Type, c => c.Value);
+                    requestTelemetry.Properties["UserClaims"] = JsonSerializer.Serialize(claims);
+                }
+            }
+            
+            // Capture controller and action information
+            var routeDataForController = context.GetRouteData();
+            if (routeDataForController != null)
+            {
+                if (routeDataForController.Values.ContainsKey("controller"))
+                {
+                    requestTelemetry.Properties["Controller"] = routeDataForController.Values["controller"]?.ToString() ?? "";
+                }
+                if (routeDataForController.Values.ContainsKey("action"))
+                {
+                    requestTelemetry.Properties["Action"] = routeDataForController.Values["action"]?.ToString() ?? "";
+                }
+                if (routeDataForController.Values.ContainsKey("area"))
+                {
+                    requestTelemetry.Properties["Area"] = routeDataForController.Values["area"]?.ToString() ?? "";
+                }
+            }
 
             // Capture all query parameters
             var queryParams = new Dictionary<string, string>();
@@ -353,6 +438,9 @@ namespace SEB.FPE.Telemetry
 
         private void CaptureException(Exception exception, HttpContext context, RequestTelemetry requestTelemetry)
         {
+            // Capture detailed exception information
+            var exceptionDetails = GetDetailedExceptionInfo(exception, requestTelemetry);
+            
             // Send to Application Insights if enabled
             if (ShouldWriteToApplicationInsights())
             {
@@ -363,9 +451,30 @@ namespace SEB.FPE.Telemetry
                     {
                         ["RequestPath"] = context.Request.Path.Value,
                         ["RequestMethod"] = context.Request.Method,
-                        ["ClientIpAddress"] = GetClientIpAddress(context)
+                        ["ClientIpAddress"] = GetClientIpAddress(context),
+                        ["CorrelationId"] = context.Items["CorrelationId"]?.ToString() ?? "",
+                        ["ExceptionType"] = exception.GetType().FullName,
+                        ["ExceptionMessage"] = exception.Message,
+                        ["ExceptionSource"] = exception.Source ?? "",
+                        ["ExceptionHResult"] = exception.HResult.ToString(),
+                        ["InnerExceptionType"] = exception.InnerException?.GetType().FullName ?? "",
+                        ["InnerExceptionMessage"] = exception.InnerException?.Message ?? ""
                     }
                 };
+                
+                // Add detailed stack trace information
+                if (_options.IncludeDetailedExceptionInfo && !string.IsNullOrEmpty(exception.StackTrace))
+                {
+                    exceptionTelemetry.Properties["StackTrace"] = exception.StackTrace;
+                    exceptionTelemetry.Properties["ExceptionLineNumber"] = GetExceptionLineNumber(exception);
+                    exceptionTelemetry.Properties["ExceptionFileName"] = GetExceptionFileName(exception);
+                }
+                
+                // Add all exception details
+                foreach (var detail in exceptionDetails)
+                {
+                    exceptionTelemetry.Properties[detail.Key] = detail.Value;
+                }
 
                 var telemetryClient = GetTelemetryClient();
                 if (telemetryClient != null)
@@ -377,12 +486,139 @@ namespace SEB.FPE.Telemetry
             // Write to local logs if enabled
             if (ShouldWriteToLocalLogs())
             {
+                var exceptionInfo = _options.IncludeDetailedExceptionInfo 
+                    ? $" | Type: {exception.GetType().FullName} | Source: {exception.Source} | HResult: {exception.HResult} | Line: {GetExceptionLineNumber(exception)}"
+                    : "";
+                    
                 _logger.LogError(exception, 
-                    "Exception occurred during request: {Method} {Path} from {IpAddress}",
+                    "Exception occurred during request: {Method} {Path} from {IpAddress}{ExceptionInfo}",
                     context.Request.Method,
                     context.Request.Path.Value,
-                    GetClientIpAddress(context));
+                    GetClientIpAddress(context),
+                    exceptionInfo);
             }
+        }
+        
+        private Dictionary<string, string> GetDetailedExceptionInfo(Exception exception, RequestTelemetry requestTelemetry)
+        {
+            var details = new Dictionary<string, string>();
+            
+            if (exception == null)
+                return details;
+            
+            details["ExceptionType"] = exception.GetType().FullName;
+            details["ExceptionMessage"] = exception.Message;
+            details["ExceptionSource"] = exception.Source ?? "";
+            details["ExceptionHResult"] = exception.HResult.ToString();
+            details["ExceptionTargetSite"] = exception.TargetSite?.ToString() ?? "";
+            
+            if (_options.IncludeDetailedExceptionInfo)
+            {
+                details["StackTrace"] = exception.StackTrace ?? "";
+                details["ExceptionLineNumber"] = GetExceptionLineNumber(exception);
+                details["ExceptionFileName"] = GetExceptionFileName(exception);
+                details["ExceptionMethod"] = exception.TargetSite?.Name ?? "";
+                
+                // Capture inner exception details
+                if (exception.InnerException != null)
+                {
+                    details["InnerExceptionType"] = exception.InnerException.GetType().FullName;
+                    details["InnerExceptionMessage"] = exception.InnerException.Message;
+                    details["InnerExceptionStackTrace"] = exception.InnerException.StackTrace ?? "";
+                    details["InnerExceptionLineNumber"] = GetExceptionLineNumber(exception.InnerException);
+                }
+                
+                // Capture aggregate exception details
+                if (exception is AggregateException aggEx && aggEx.InnerExceptions != null)
+                {
+                    var innerExceptions = aggEx.InnerExceptions
+                        .Select((ex, idx) => new
+                        {
+                            Index = idx,
+                            Type = ex.GetType().FullName,
+                            Message = ex.Message,
+                            LineNumber = GetExceptionLineNumber(ex)
+                        })
+                        .ToList();
+                    details["AggregateInnerExceptions"] = JsonSerializer.Serialize(innerExceptions);
+                }
+            }
+            
+            // Add timing information
+            if (requestTelemetry.Properties.ContainsKey("TotalDurationMs"))
+            {
+                details["DurationAtException"] = requestTelemetry.Properties["TotalDurationMs"];
+            }
+            
+            return details;
+        }
+        
+        private string GetExceptionLineNumber(Exception exception)
+        {
+            if (exception == null || string.IsNullOrEmpty(exception.StackTrace))
+                return "N/A";
+            
+            try
+            {
+                // Parse stack trace to find line number
+                var stackTrace = new StackTrace(exception, true);
+                var frame = stackTrace.GetFrame(0);
+                if (frame != null && frame.GetFileLineNumber() > 0)
+                {
+                    return frame.GetFileLineNumber().ToString();
+                }
+                
+                // Fallback: try to extract from stack trace string
+                var lines = exception.StackTrace.Split('\n');
+                if (lines.Length > 0)
+                {
+                    var firstLine = lines[0];
+                    // Look for pattern like ":line 123" or "line 123"
+                    var lineMatch = System.Text.RegularExpressions.Regex.Match(firstLine, @"(?:line|:line)\s+(\d+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                    if (lineMatch.Success)
+                    {
+                        return lineMatch.Groups[1].Value;
+                    }
+                }
+            }
+            catch
+            {
+                // If parsing fails, return N/A
+            }
+            
+            return "N/A";
+        }
+        
+        private string GetExceptionFileName(Exception exception)
+        {
+            if (exception == null || string.IsNullOrEmpty(exception.StackTrace))
+                return "N/A";
+            
+            try
+            {
+                var stackTrace = new StackTrace(exception, true);
+                var frame = stackTrace.GetFrame(0);
+                if (frame != null && !string.IsNullOrEmpty(frame.GetFileName()))
+                {
+                    return Path.GetFileName(frame.GetFileName());
+                }
+            }
+            catch
+            {
+                // If parsing fails, return N/A
+            }
+            
+            return "N/A";
+        }
+        
+        private string MaskSensitiveClaim(string claimType, string claimValue)
+        {
+            var sensitiveClaimTypes = new[] { "password", "token", "secret", "key", "authorization" };
+            if (sensitiveClaimTypes.Any(s => claimType.ToLower().Contains(s)))
+            {
+                return "***MASKED***";
+            }
+            return claimValue;
         }
 
         private async Task LogTelemetryAsync(HttpContext context, RequestTelemetry requestTelemetry, string responseBody, Exception exception)
@@ -561,14 +797,96 @@ namespace SEB.FPE.Telemetry
             
             // Client Information
             sb.Append($"ClientIP: {GetClientIpAddress(context)} | ");
-            sb.Append($"UserAgent: {context.Request.Headers["User-Agent"]}");
+            sb.Append($"UserAgent: {context.Request.Headers["User-Agent"]} | ");
+            sb.Append($"CorrelationId: {context.Items["CorrelationId"]} | ");
+            sb.Append($"TraceId: {context.TraceIdentifier}");
             
-            // Exception Information
+            // User Identity Information (for audit)
+            if (_options.IncludeUserIdentity && context.User?.Identity != null)
+            {
+                sb.Append($" | IsAuthenticated: {context.User.Identity.IsAuthenticated} | ");
+                sb.Append($"UserName: {context.User.Identity.Name ?? "Anonymous"}");
+                
+                var userIdClaim = context.User.FindFirst(ClaimTypes.NameIdentifier) 
+                    ?? context.User.FindFirst("sub") 
+                    ?? context.User.FindFirst("user_id");
+                if (userIdClaim != null)
+                {
+                    sb.Append($" | UserId: {userIdClaim.Value}");
+                }
+                
+                var tenantIdClaim = context.User.FindFirst("tenant_id") 
+                    ?? context.User.FindFirst("TenantId");
+                if (tenantIdClaim != null)
+                {
+                    sb.Append($" | TenantId: {tenantIdClaim.Value}");
+                }
+                
+                var emailClaim = context.User.FindFirst(ClaimTypes.Email) 
+                    ?? context.User.FindFirst("email");
+                if (emailClaim != null)
+                {
+                    sb.Append($" | UserEmail: {emailClaim.Value}");
+                }
+                
+                var roles = context.User.Claims
+                    .Where(c => c.Type == ClaimTypes.Role || c.Type == "role")
+                    .Select(c => c.Value)
+                    .ToList();
+                if (roles.Count > 0)
+                {
+                    sb.Append($" | UserRoles: {JsonSerializer.Serialize(roles)}");
+                }
+            }
+            
+            // Controller/Action Information
+            var routeDataForLog = context.GetRouteData();
+            if (routeDataForLog != null)
+            {
+                if (routeDataForLog.Values.ContainsKey("controller"))
+                {
+                    sb.Append($" | Controller: {routeDataForLog.Values["controller"]}");
+                }
+                if (routeDataForLog.Values.ContainsKey("action"))
+                {
+                    sb.Append($" | Action: {routeDataForLog.Values["action"]}");
+                }
+                if (routeDataForLog.Values.ContainsKey("area"))
+                {
+                    sb.Append($" | Area: {routeDataForLog.Values["area"]}");
+                }
+            }
+            
+            // Exception Information (detailed)
             if (exception != null)
             {
-                sb.Append($" | ExceptionType: {exception.GetType().Name} | ");
+                sb.Append($" | ExceptionType: {exception.GetType().FullName} | ");
                 sb.Append($"ExceptionMessage: {exception.Message} | ");
-                sb.Append($"StackTrace: {exception.StackTrace}");
+                sb.Append($"ExceptionSource: {exception.Source ?? "N/A"} | ");
+                sb.Append($"ExceptionHResult: {exception.HResult} | ");
+                sb.Append($"ExceptionTargetSite: {exception.TargetSite?.ToString() ?? "N/A"}");
+                
+                if (_options.IncludeDetailedExceptionInfo)
+                {
+                    sb.Append($" | ExceptionLineNumber: {GetExceptionLineNumber(exception)} | ");
+                    sb.Append($"ExceptionFileName: {GetExceptionFileName(exception)} | ");
+                    sb.Append($"StackTrace: {exception.StackTrace ?? "N/A"}");
+                    
+                    if (exception.InnerException != null)
+                    {
+                        sb.Append($" | InnerExceptionType: {exception.InnerException.GetType().FullName} | ");
+                        sb.Append($"InnerExceptionMessage: {exception.InnerException.Message} | ");
+                        sb.Append($"InnerExceptionLineNumber: {GetExceptionLineNumber(exception.InnerException)}");
+                    }
+                }
+            }
+            
+            // Error Reason/Status
+            if (context.Response.StatusCode >= 400)
+            {
+                var errorReason = GetErrorReason(context.Response.StatusCode);
+                sb.Append($" | ErrorReason: {errorReason} | ");
+                sb.Append($"ErrorCategory: {GetErrorCategory(context.Response.StatusCode)}");
             }
 
             return sb.ToString();
@@ -759,6 +1077,59 @@ namespace SEB.FPE.Telemetry
 
             // Fallback to explicit WriteToApplicationInsights setting
             return _options.WriteToApplicationInsights;
+        }
+        
+        private string GetErrorReason(int statusCode)
+        {
+            return statusCode switch
+            {
+                400 => "Bad Request - Invalid request parameters or malformed request",
+                401 => "Unauthorized - Authentication required or failed",
+                403 => "Forbidden - Access denied, insufficient permissions",
+                404 => "Not Found - Resource or endpoint not found",
+                405 => "Method Not Allowed - HTTP method not supported for this endpoint",
+                408 => "Request Timeout - Request took too long to process",
+                409 => "Conflict - Resource conflict or duplicate request",
+                422 => "Unprocessable Entity - Validation failed",
+                429 => "Too Many Requests - Rate limit exceeded",
+                500 => "Internal Server Error - Unexpected server error",
+                502 => "Bad Gateway - Invalid response from upstream server",
+                503 => "Service Unavailable - Service temporarily unavailable",
+                504 => "Gateway Timeout - Upstream server timeout",
+                _ => $"HTTP {statusCode} - {GetHttpStatusDescription(statusCode)}"
+            };
+        }
+        
+        private string GetErrorCategory(int statusCode)
+        {
+            if (statusCode >= 400 && statusCode < 500)
+                return "ClientError";
+            if (statusCode >= 500)
+                return "ServerError";
+            return "Unknown";
+        }
+        
+        private string GetHttpStatusDescription(int statusCode)
+        {
+            // Common HTTP status descriptions
+            var descriptions = new Dictionary<int, string>
+            {
+                { 400, "Bad Request" },
+                { 401, "Unauthorized" },
+                { 403, "Forbidden" },
+                { 404, "Not Found" },
+                { 405, "Method Not Allowed" },
+                { 408, "Request Timeout" },
+                { 409, "Conflict" },
+                { 422, "Unprocessable Entity" },
+                { 429, "Too Many Requests" },
+                { 500, "Internal Server Error" },
+                { 502, "Bad Gateway" },
+                { 503, "Service Unavailable" },
+                { 504, "Gateway Timeout" }
+            };
+            
+            return descriptions.ContainsKey(statusCode) ? descriptions[statusCode] : "Unknown Status";
         }
     }
 }

@@ -1,0 +1,15 @@
+D:\Ysquare\DOTNET\Rate_Limitting\kentico-xperience-sample-mvc\obj\Debug\net10.0\EmbeddedAttribute.cs
+D:\Ysquare\DOTNET\Rate_Limitting\kentico-xperience-sample-mvc\obj\Debug\net10.0\ValidatableTypeAttribute.cs
+D:\Ysquare\DOTNET\Rate_Limitting\kentico-xperience-sample-mvc\obj\Debug\net10.0\SampleMVC.csproj.AssemblyReference.cache
+D:\Ysquare\DOTNET\Rate_Limitting\kentico-xperience-sample-mvc\obj\Debug\net10.0\rpswa.dswa.cache.json
+D:\Ysquare\DOTNET\Rate_Limitting\kentico-xperience-sample-mvc\obj\Debug\net10.0\DancingGoat.DancingGoatResources.resources
+D:\Ysquare\DOTNET\Rate_Limitting\kentico-xperience-sample-mvc\obj\Debug\net10.0\DancingGoat.SharedResources.es.resources
+D:\Ysquare\DOTNET\Rate_Limitting\kentico-xperience-sample-mvc\obj\Debug\net10.0\SampleMVC.csproj.GenerateResource.cache
+D:\Ysquare\DOTNET\Rate_Limitting\kentico-xperience-sample-mvc\obj\Debug\net10.0\SampleMVC.GeneratedMSBuildEditorConfig.editorconfig
+D:\Ysquare\DOTNET\Rate_Limitting\kentico-xperience-sample-mvc\obj\Debug\net10.0\SampleMVC.AssemblyInfoInputs.cache
+D:\Ysquare\DOTNET\Rate_Limitting\kentico-xperience-sample-mvc\obj\Debug\net10.0\SampleMVC.AssemblyInfo.cs
+D:\Ysquare\DOTNET\Rate_Limitting\kentico-xperience-sample-mvc\obj\Debug\net10.0\SampleMVC.csproj.CoreCompileInputs.cache
+D:\Ysquare\DOTNET\Rate_Limitting\kentico-xperience-sample-mvc\obj\Debug\net10.0\SampleMVC.MvcApplicationPartsAssemblyInfo.cs
+D:\Ysquare\DOTNET\Rate_Limitting\kentico-xperience-sample-mvc\obj\Debug\net10.0\SampleMVC.MvcApplicationPartsAssemblyInfo.cache
+D:\Ysquare\DOTNET\Rate_Limitting\kentico-xperience-sample-mvc\obj\Debug\net10.0\SampleMVC.RazorAssemblyInfo.cache
+D:\Ysquare\DOTNET\Rate_Limitting\kentico-xperience-sample-mvc\obj\Debug\net10.0\SampleMVC.RazorAssemblyInfo.cs

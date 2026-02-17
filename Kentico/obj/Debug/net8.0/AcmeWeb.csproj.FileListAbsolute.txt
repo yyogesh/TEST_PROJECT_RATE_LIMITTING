@@ -1,0 +1,8 @@
+D:\Ysquare\DOTNET\Rate_Limitting\Kentico\obj\Debug\net8.0\AcmeWeb.csproj.AssemblyReference.cache
+D:\Ysquare\DOTNET\Rate_Limitting\Kentico\obj\Debug\net8.0\rpswa.dswa.cache.json
+D:\Ysquare\DOTNET\Rate_Limitting\Kentico\obj\Debug\net8.0\AcmeWeb.GeneratedMSBuildEditorConfig.editorconfig
+D:\Ysquare\DOTNET\Rate_Limitting\Kentico\obj\Debug\net8.0\AcmeWeb.AssemblyInfoInputs.cache
+D:\Ysquare\DOTNET\Rate_Limitting\Kentico\obj\Debug\net8.0\AcmeWeb.AssemblyInfo.cs
+D:\Ysquare\DOTNET\Rate_Limitting\Kentico\obj\Debug\net8.0\AcmeWeb.csproj.CoreCompileInputs.cache
+D:\Ysquare\DOTNET\Rate_Limitting\Kentico\obj\Debug\net8.0\AcmeWeb.MvcApplicationPartsAssemblyInfo.cs
+D:\Ysquare\DOTNET\Rate_Limitting\Kentico\obj\Debug\net8.0\AcmeWeb.MvcApplicationPartsAssemblyInfo.cache

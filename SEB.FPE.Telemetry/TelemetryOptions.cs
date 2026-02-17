@@ -101,5 +101,20 @@ namespace SEB.FPE.Telemetry
         /// File logging options (for local file logging)
         /// </summary>
         public FileLoggerOptions FileLogging { get; set; } = new FileLoggerOptions();
+
+        /// <summary>
+        /// Whether to capture user identity and claims for audit purposes
+        /// </summary>
+        public bool IncludeUserIdentity { get; set; } = true;
+
+        /// <summary>
+        /// Whether to capture detailed exception information (line numbers, inner exceptions)
+        /// </summary>
+        public bool IncludeDetailedExceptionInfo { get; set; } = true;
+
+        /// <summary>
+        /// Whether to capture correlation/request ID
+        /// </summary>
+        public bool IncludeCorrelationId { get; set; } = true;
     }
 }

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SEB.FPE.Telemetry.TestApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c57ecd64637a67b52ef08054c7ce382a81abe0b6")]
 [assembly: System.Reflection.AssemblyProductAttribute("SEB.FPE.Telemetry.TestApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SEB.FPE.Telemetry.TestApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

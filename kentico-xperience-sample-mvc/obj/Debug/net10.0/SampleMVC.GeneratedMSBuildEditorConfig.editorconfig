@@ -1,0 +1,311 @@
+is_global = true
+build_property.TargetFramework = net10.0
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v10.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = DancingGoat
+build_property.RootNamespace = DancingGoat
+build_property.ProjectDir = D:\Ysquare\DOTNET\Rate_Limitting\kentico-xperience-sample-mvc\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 9.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = D:\Ysquare\DOTNET\Rate_Limitting\kentico-xperience-sample-mvc
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 10.0
+build_property.EnableCodeStyleSeverity = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/EmailComponents/Sections/DancingGoatFullWidthEmailSection.razor]
+build_metadata.AdditionalFiles.TargetPath = RW1haWxDb21wb25lbnRzXFNlY3Rpb25zXERhbmNpbmdHb2F0RnVsbFdpZHRoRW1haWxTZWN0aW9uLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/EmailComponents/Sections/DancingGoatTwoColumnEmailSection.razor]
+build_metadata.AdditionalFiles.TargetPath = RW1haWxDb21wb25lbnRzXFNlY3Rpb25zXERhbmNpbmdHb2F0VHdvQ29sdW1uRW1haWxTZWN0aW9uLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/EmailComponents/Templates/DancingGoatEmailBuilderTemplate.razor]
+build_metadata.AdditionalFiles.TargetPath = RW1haWxDb21wb25lbnRzXFRlbXBsYXRlc1xEYW5jaW5nR29hdEVtYWlsQnVpbGRlclRlbXBsYXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/EmailComponents/Widgets/ButtonWidget/DancingGoatButtonWidget.razor]
+build_metadata.AdditionalFiles.TargetPath = RW1haWxDb21wb25lbnRzXFdpZGdldHNcQnV0dG9uV2lkZ2V0XERhbmNpbmdHb2F0QnV0dG9uV2lkZ2V0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/EmailComponents/Widgets/ImageWidget/DancingGoatImageWidget.razor]
+build_metadata.AdditionalFiles.TargetPath = RW1haWxDb21wb25lbnRzXFdpZGdldHNcSW1hZ2VXaWRnZXRcRGFuY2luZ0dvYXRJbWFnZVdpZGdldC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/EmailComponents/Widgets/TextWidget/DancingGoatTextWidget.razor]
+build_metadata.AdditionalFiles.TargetPath = RW1haWxDb21wb25lbnRzXFdpZGdldHNcVGV4dFdpZGdldFxEYW5jaW5nR29hdFRleHRXaWRnZXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Components/FormSections/TitledSection/_TitledSection.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xGb3JtU2VjdGlvbnNcVGl0bGVkU2VjdGlvblxfVGl0bGVkU2VjdGlvbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Components/InlineEditors/ColorPickerEditor/_ColorPickerEditor.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xJbmxpbmVFZGl0b3JzXENvbG9yUGlja2VyRWRpdG9yXF9Db2xvclBpY2tlckVkaXRvci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Components/InlineEditors/TextEditor/_TextEditor.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xJbmxpbmVFZGl0b3JzXFRleHRFZGl0b3JcX1RleHRFZGl0b3IuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Components/Sections/ThreeColumnSection/_DancingGoat_ThreeColumnSection.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTZWN0aW9uc1xUaHJlZUNvbHVtblNlY3Rpb25cX0RhbmNpbmdHb2F0X1RocmVlQ29sdW1uU2VjdGlvbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Components/Sections/_DancingGoat_Section_25_75.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTZWN0aW9uc1xfRGFuY2luZ0dvYXRfU2VjdGlvbl8yNV83NS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Components/Sections/_DancingGoat_Section_75_25.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTZWN0aW9uc1xfRGFuY2luZ0dvYXRfU2VjdGlvbl83NV8yNS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Components/Sections/_DancingGoat_SingleColumnSection.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTZWN0aW9uc1xfRGFuY2luZ0dvYXRfU2luZ2xlQ29sdW1uU2VjdGlvbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Components/Sections/_DancingGoat_TwoColumnSection.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTZWN0aW9uc1xfRGFuY2luZ0dvYXRfVHdvQ29sdW1uU2VjdGlvbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Components/ViewComponents/Articles/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xWaWV3Q29tcG9uZW50c1xBcnRpY2xlc1xEZWZhdWx0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Components/ViewComponents/Banner/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xWaWV3Q29tcG9uZW50c1xCYW5uZXJcRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Components/ViewComponents/CafeCardSection/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xWaWV3Q29tcG9uZW50c1xDYWZlQ2FyZFNlY3Rpb25cRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Components/ViewComponents/Cafe/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xWaWV3Q29tcG9uZW50c1xDYWZlXERlZmF1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Components/ViewComponents/CompanyAddress/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xWaWV3Q29tcG9uZW50c1xDb21wYW55QWRkcmVzc1xEZWZhdWx0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Components/ViewComponents/NavigationMenu/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xWaWV3Q29tcG9uZW50c1xOYXZpZ2F0aW9uTWVudVxEZWZhdWx0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Components/ViewComponents/SocialLinks/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xWaWV3Q29tcG9uZW50c1xTb2NpYWxMaW5rc1xEZWZhdWx0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Components/ViewComponents/TrackingConsent/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xWaWV3Q29tcG9uZW50c1xUcmFja2luZ0NvbnNlbnRcRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Components/Widgets/CardWidget/_CardWidget.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xXaWRnZXRzXENhcmRXaWRnZXRcX0NhcmRXaWRnZXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Components/Widgets/CTAButton/_DancingGoat_General_CTAButtonWidget.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xXaWRnZXRzXENUQUJ1dHRvblxfRGFuY2luZ0dvYXRfR2VuZXJhbF9DVEFCdXR0b25XaWRnZXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Components/Widgets/HeroImageWidget/_HeroImageWidget.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xXaWRnZXRzXEhlcm9JbWFnZVdpZGdldFxfSGVyb0ltYWdlV2lkZ2V0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Components/Widgets/ProductCardWidget/_ProductCardWidget.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xXaWRnZXRzXFByb2R1Y3RDYXJkV2lkZ2V0XF9Qcm9kdWN0Q2FyZFdpZGdldC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Components/Widgets/TestimonialWidget/_DancingGoat_LandingPage_TestimonialWidget.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xXaWRnZXRzXFRlc3RpbW9uaWFsV2lkZ2V0XF9EYW5jaW5nR29hdF9MYW5kaW5nUGFnZV9UZXN0aW1vbmlhbFdpZGdldC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Components/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xfVmlld0ltcG9ydHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/PageTemplates/Article/_Article.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZVRlbXBsYXRlc1xBcnRpY2xlXF9BcnRpY2xlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/PageTemplates/Article/_ArticleWithSidebar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZVRlbXBsYXRlc1xBcnRpY2xlXF9BcnRpY2xlV2l0aFNpZGViYXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/PageTemplates/LandingPage/_DancingGoat_LandingPageSingleColumn.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZVRlbXBsYXRlc1xMYW5kaW5nUGFnZVxfRGFuY2luZ0dvYXRfTGFuZGluZ1BhZ2VTaW5nbGVDb2x1bW4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/PageTemplates/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZVRlbXBsYXRlc1xfVmlld0ltcG9ydHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/Account/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/Account/Register.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatArticle/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRBcnRpY2xlXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatArticle/RelatedPages.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRBcnRpY2xlXFJlbGF0ZWRQYWdlcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatCheckout/ConfirmOrder.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRDaGVja291dFxDb25maXJtT3JkZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatCheckout/EditorTemplates/CustomerAddressViewModel.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRDaGVja291dFxFZGl0b3JUZW1wbGF0ZXNcQ3VzdG9tZXJBZGRyZXNzVmlld01vZGVsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatCheckout/EditorTemplates/CustomerViewModel.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRDaGVja291dFxFZGl0b3JUZW1wbGF0ZXNcQ3VzdG9tZXJWaWV3TW9kZWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatCheckout/EditorTemplates/PaymentShippingViewModel.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRDaGVja291dFxFZGl0b3JUZW1wbGF0ZXNcUGF5bWVudFNoaXBwaW5nVmlld01vZGVsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatCheckout/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRDaGVja291dFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatCheckout/_CheckoutCustomer.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRDaGVja291dFxfQ2hlY2tvdXRDdXN0b21lci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatCheckout/_OrderConfirmation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRDaGVja291dFxfT3JkZXJDb25maXJtYXRpb24uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatCheckout/_ShoppingCartCheckoutCustomerData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRDaGVja291dFxfU2hvcHBpbmdDYXJ0Q2hlY2tvdXRDdXN0b21lckRhdGEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatCheckout/_ShoppingCartContentPreview.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRDaGVja291dFxfU2hvcHBpbmdDYXJ0Q29udGVudFByZXZpZXcuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatConfirmation/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRDb25maXJtYXRpb25cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatContacts/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRDb250YWN0c1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatHome/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRIb21lXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatPrivacy/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRQcml2YWN5XEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatProductCategory/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRQcm9kdWN0Q2F0ZWdvcnlcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatProductCategory/ProductsList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRQcm9kdWN0Q2F0ZWdvcnlcUHJvZHVjdHNMaXN0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatProductDetail/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRQcm9kdWN0RGV0YWlsXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatProduct/Filter.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRQcm9kdWN0XEZpbHRlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatProduct/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRQcm9kdWN0XEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatProduct/ProductsList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRQcm9kdWN0XFByb2R1Y3RzTGlzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatShoppingCart/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRTaG9wcGluZ0NhcnRcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatShoppingCart/_ShoppingCartContentEdit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRTaG9wcGluZ0NhcnRcX1Nob3BwaW5nQ2FydENvbnRlbnRFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatStore/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRTdG9yZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/DancingGoatStore/ProductsList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuY2luZ0dvYXRTdG9yZVxQcm9kdWN0c0xpc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/HttpErrors/NotFound.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSHR0cEVycm9yc1xOb3RGb3VuZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/Shared/DisplayTemplates/ProductCategoryMenu.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXERpc3BsYXlUZW1wbGF0ZXNcUHJvZHVjdENhdGVnb3J5TWVudS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/Shared/DisplayTemplates/ProductListItem.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXERpc3BsYXlUZW1wbGF0ZXNcUHJvZHVjdExpc3RJdGVtLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/Shared/EditorTemplates/TagViewModel.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVkaXRvclRlbXBsYXRlc1xUYWdWaWV3TW9kZWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/Shared/_DancingGoatLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9EYW5jaW5nR29hdExheW91dC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/Shared/_Event.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9FdmVudC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/Shared/_LandingPageLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYW5kaW5nUGFnZUxheW91dC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/Shared/_Reference.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9SZWZlcmVuY2UuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/Shared/_ShoppingCartTotals.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9TaG9wcGluZ0NhcnRUb3RhbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/Shared/_ShoppingCartTotalsConfirmation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9TaG9wcGluZ0NhcnRUb3RhbHNDb25maXJtYXRpb24uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Ysquare/DOTNET/Rate_Limitting/kentico-xperience-sample-mvc/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
