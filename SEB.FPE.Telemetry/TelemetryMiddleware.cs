@@ -251,7 +251,7 @@ namespace SEB.FPE.Telemetry
                     requestTelemetry.Properties["UserEmail"] = emailClaim.Value;
                 }
                 
-                // Capture roles
+                // Capture roles (essential for audit)
                 var roles = context.User.Claims
                     .Where(c => c.Type == ClaimTypes.Role || c.Type == "role")
                     .Select(c => c.Value)
@@ -261,14 +261,8 @@ namespace SEB.FPE.Telemetry
                     requestTelemetry.Properties["UserRoles"] = JsonSerializer.Serialize(roles);
                 }
                 
-                // Capture all claims if needed (for detailed audit)
-                if (_options.IncludeRequestHeaders)
-                {
-                    var claims = context.User.Claims
-                        .Select(c => new { Type = c.Type, Value = MaskSensitiveClaim(c.Type, c.Value) })
-                        .ToDictionary(c => c.Type, c => c.Value);
-                    requestTelemetry.Properties["UserClaims"] = JsonSerializer.Serialize(claims);
-                }
+                // Note: Removed UserClaims capture to avoid duplication
+                // Individual claims (UserId, TenantId, UserEmail, UserRoles) are already captured above
             }
             
             // Capture controller and action information
@@ -706,106 +700,42 @@ namespace SEB.FPE.Telemetry
         {
             var sb = new StringBuilder();
             
-            // Request Information
+            // Essential Request Information
             sb.Append($"Method: {context.Request.Method} | ");
             sb.Append($"Path: {context.Request.Path.Value} | ");
             sb.Append($"QueryString: {MaskSensitiveQueryParams(context.Request.QueryString.ToString())} | ");
-            sb.Append($"Scheme: {context.Request.Scheme} | ");
-            sb.Append($"Host: {context.Request.Host} | ");
-            sb.Append($"Protocol: {context.Request.Protocol} | ");
-            sb.Append($"ContentType: {context.Request.ContentType ?? "N/A"} | ");
-            sb.Append($"ContentLength: {context.Request.ContentLength ?? 0} | ");
             
-            // Query Parameters
-            if (context.Request.Query.Count > 0)
-            {
-                var queryParams = new Dictionary<string, string>();
-                foreach (var param in context.Request.Query)
-                {
-                    queryParams[param.Key] = MaskSensitiveQueryParam(param.Key, string.Join(",", param.Value));
-                }
-                sb.Append($"QueryParameters: {JsonSerializer.Serialize(queryParams)} | ");
-            }
-            
-            // Route Parameters
-            var routeData = context.GetRouteData();
-            if (routeData?.Values != null && routeData.Values.Count > 0)
-            {
-                var routeParams = new Dictionary<string, string>();
-                foreach (var routeValue in routeData.Values)
-                {
-                    routeParams[routeValue.Key] = routeValue.Value?.ToString() ?? "";
-                }
-                sb.Append($"RouteParameters: {JsonSerializer.Serialize(routeParams)} | ");
-            }
-            
-            // Form Data
-            if (context.Request.HasFormContentType && context.Request.Form != null && context.Request.Form.Count > 0)
-            {
-                var formData = new Dictionary<string, string>();
-                foreach (var field in context.Request.Form)
-                {
-                    formData[field.Key] = MaskSensitiveFormField(field.Key, string.Join(",", field.Value));
-                }
-                sb.Append($"FormData: {JsonSerializer.Serialize(formData)} | ");
-            }
-            
-            // Request Headers
-            if (_options.IncludeRequestHeaders)
-            {
-                var headers = CaptureHeaders(context.Request.Headers, _options.SensitiveHeaders);
-                sb.Append($"RequestHeaders: {JsonSerializer.Serialize(headers)} | ");
-            }
-            
-            // Request Body
+            // Request Payload (Body)
             if (requestTelemetry.Properties.ContainsKey("RequestBody"))
             {
                 sb.Append($"RequestBody: {requestTelemetry.Properties["RequestBody"]} | ");
             }
             
-            // Response Information
+            // Response Status
             sb.Append($"StatusCode: {context.Response.StatusCode} | ");
-            sb.Append($"ResponseContentType: {context.Response.ContentType ?? "N/A"} | ");
-            sb.Append($"ResponseContentLength: {context.Response.ContentLength ?? 0} | ");
             
-            // Timing Information
+            // Date/Time and Duration (Essential for audit)
+            if (requestTelemetry.Properties.ContainsKey("RequestTimestamp"))
+            {
+                sb.Append($"RequestTimestamp: {requestTelemetry.Properties["RequestTimestamp"]} | ");
+            }
+            if (requestTelemetry.Properties.ContainsKey("ResponseTimestamp"))
+            {
+                sb.Append($"ResponseTimestamp: {requestTelemetry.Properties["ResponseTimestamp"]} | ");
+            }
             if (requestTelemetry.Properties.ContainsKey("TotalDurationMs"))
             {
                 sb.Append($"TotalDuration: {requestTelemetry.Properties["TotalDurationMs"]}ms | ");
             }
-            if (requestTelemetry.Properties.ContainsKey("ResponseDurationMs"))
-            {
-                sb.Append($"ResponseDuration: {requestTelemetry.Properties["ResponseDurationMs"]}ms | ");
-            }
-            if (requestTelemetry.Properties.ContainsKey("TimeBetweenRequestAndResponseMs"))
-            {
-                sb.Append($"TimeBetweenRequestAndResponse: {requestTelemetry.Properties["TimeBetweenRequestAndResponseMs"]}ms | ");
-            }
             
-            // Response Headers
-            if (_options.IncludeResponseHeaders)
-            {
-                var responseHeaders = CaptureHeaders(context.Response.Headers, _options.SensitiveHeaders);
-                sb.Append($"ResponseHeaders: {JsonSerializer.Serialize(responseHeaders)} | ");
-            }
-            
-            // Response Body
-            if (!string.IsNullOrEmpty(responseBody) && _options.LogBody)
-            {
-                sb.Append($"ResponseBody: {responseBody} | ");
-            }
-            
-            // Client Information
+            // Client Information (Essential for audit)
             sb.Append($"ClientIP: {GetClientIpAddress(context)} | ");
-            sb.Append($"UserAgent: {context.Request.Headers["User-Agent"]} | ");
-            sb.Append($"CorrelationId: {context.Items["CorrelationId"]} | ");
-            sb.Append($"TraceId: {context.TraceIdentifier}");
+            sb.Append($"CorrelationId: {context.Items["CorrelationId"]}");
             
-            // User Identity Information (for audit)
+            // User Identity Information (Essential for audit)
             if (_options.IncludeUserIdentity && context.User?.Identity != null)
             {
-                sb.Append($" | IsAuthenticated: {context.User.Identity.IsAuthenticated} | ");
-                sb.Append($"UserName: {context.User.Identity.Name ?? "Anonymous"}");
+                sb.Append($" | UserName: {context.User.Identity.Name ?? "Anonymous"}");
                 
                 var userIdClaim = context.User.FindFirst(ClaimTypes.NameIdentifier) 
                     ?? context.User.FindFirst("sub") 
@@ -821,25 +751,9 @@ namespace SEB.FPE.Telemetry
                 {
                     sb.Append($" | TenantId: {tenantIdClaim.Value}");
                 }
-                
-                var emailClaim = context.User.FindFirst(ClaimTypes.Email) 
-                    ?? context.User.FindFirst("email");
-                if (emailClaim != null)
-                {
-                    sb.Append($" | UserEmail: {emailClaim.Value}");
-                }
-                
-                var roles = context.User.Claims
-                    .Where(c => c.Type == ClaimTypes.Role || c.Type == "role")
-                    .Select(c => c.Value)
-                    .ToList();
-                if (roles.Count > 0)
-                {
-                    sb.Append($" | UserRoles: {JsonSerializer.Serialize(roles)}");
-                }
             }
             
-            // Controller/Action Information
+            // Controller/Action Information (Essential for audit)
             var routeDataForLog = context.GetRouteData();
             if (routeDataForLog != null)
             {
@@ -851,42 +765,26 @@ namespace SEB.FPE.Telemetry
                 {
                     sb.Append($" | Action: {routeDataForLog.Values["action"]}");
                 }
-                if (routeDataForLog.Values.ContainsKey("area"))
-                {
-                    sb.Append($" | Area: {routeDataForLog.Values["area"]}");
-                }
             }
             
-            // Exception Information (detailed)
+            // Exception Information (Essential for error tracking)
             if (exception != null)
             {
                 sb.Append($" | ExceptionType: {exception.GetType().FullName} | ");
-                sb.Append($"ExceptionMessage: {exception.Message} | ");
-                sb.Append($"ExceptionSource: {exception.Source ?? "N/A"} | ");
-                sb.Append($"ExceptionHResult: {exception.HResult} | ");
-                sb.Append($"ExceptionTargetSite: {exception.TargetSite?.ToString() ?? "N/A"}");
+                sb.Append($"ExceptionMessage: {exception.Message}");
                 
                 if (_options.IncludeDetailedExceptionInfo)
                 {
                     sb.Append($" | ExceptionLineNumber: {GetExceptionLineNumber(exception)} | ");
-                    sb.Append($"ExceptionFileName: {GetExceptionFileName(exception)} | ");
-                    sb.Append($"StackTrace: {exception.StackTrace ?? "N/A"}");
-                    
-                    if (exception.InnerException != null)
-                    {
-                        sb.Append($" | InnerExceptionType: {exception.InnerException.GetType().FullName} | ");
-                        sb.Append($"InnerExceptionMessage: {exception.InnerException.Message} | ");
-                        sb.Append($"InnerExceptionLineNumber: {GetExceptionLineNumber(exception.InnerException)}");
-                    }
+                    sb.Append($"ExceptionFileName: {GetExceptionFileName(exception)}");
                 }
             }
             
-            // Error Reason/Status
+            // Error Reason/Status (Essential for error tracking)
             if (context.Response.StatusCode >= 400)
             {
                 var errorReason = GetErrorReason(context.Response.StatusCode);
-                sb.Append($" | ErrorReason: {errorReason} | ");
-                sb.Append($"ErrorCategory: {GetErrorCategory(context.Response.StatusCode)}");
+                sb.Append($" | ErrorReason: {errorReason}");
             }
 
             return sb.ToString();

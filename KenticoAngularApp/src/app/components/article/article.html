@@ -1,0 +1,41 @@
+<div class="article-container">
+    <div class="header">
+      <h1>Articles from Kentico CMS</h1>
+      <button (click)="refreshArticles()" [disabled]="isLoading()" class="refresh-btn">
+        {{ isLoading() ? 'Loading...' : 'Refresh' }}
+      </button>
+    </div>
+  
+    <!-- Loading State -->
+    @if (isLoading()) {
+      <div class="loading">
+        <p>Loading articles...</p>
+      </div>
+    }
+  
+    <!-- Error State -->
+    @if (error() && !isLoading()) {
+      <div class="error">
+        <p><strong>Error:</strong> {{ error() }}</p>
+        <button (click)="loadArticles()">Try Again</button>
+      </div>
+    }
+  
+    <!-- Articles List -->
+    @if (!isLoading() && !error()) {
+      <div class="articles-list">
+        @if (!hasArticles()) {
+          <div class="no-articles">
+            <p>No articles found.</p>
+          </div>
+        }
+  
+        @for (article of articles(); track article.id || article.title) {
+          <div class="article-card">
+            <h2 class="article-title">{{ article.title }}</h2>
+            <div class="article-body" [innerHTML]="article.body"></div>
+          </div>
+        }
+      </div>
+    }
+  </div>

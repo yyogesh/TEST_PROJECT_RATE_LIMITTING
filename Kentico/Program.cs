@@ -17,6 +17,16 @@ builder.Services.AddKentico(features =>
     // Headless is included automatically, no explicit call needed
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization(); // Uncomment this
 
@@ -30,6 +40,7 @@ app.InitKentico();
 
 app.UseStaticFiles();
 app.UseCookiePolicy();
+app.UseCors("AllowAngularApp");
 app.UseAuthentication();
 app.UseAuthorization(); // Uncomment this
 

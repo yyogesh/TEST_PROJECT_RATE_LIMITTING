@@ -1,12 +1,1 @@
-{
-  "Version": 1,
-  "Hash": "uGJm1OqADk+DEKdUIZMnJ2g9KCc0tfMOhCcbCGg3nL8=",
-  "Source": "SEB.FPE.Telemetry.TestApp",
-  "BasePath": "_content/SEB.FPE.Telemetry.TestApp",
-  "Mode": "Default",
-  "ManifestType": "Build",
-  "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": [],
-  "Endpoints": []
-}
+{"Version":1,"Hash":"WywsLkvEO2OFc8sS2A/C2gg1mFBW4xnoVSsPtL5M5n4=","Source":"SEB.FPE.Telemetry.TestApp","BasePath":"/","Mode":"Root","ManifestType":"Build","ReferencedProjectsConfiguration":[],"DiscoveryPatterns":[],"Assets":[],"Endpoints":[]}

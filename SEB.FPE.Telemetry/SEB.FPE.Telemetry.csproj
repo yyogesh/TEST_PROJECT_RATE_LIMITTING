@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="..\..\common.props"></Import>
+	<Import Project="..\..\common.props" Condition="Exists('..\..\common.props')"></Import>
 	<PropertyGroup Label="Globals">
 		<SccProjectName>SAK</SccProjectName>
 		<SccProvider>SAK</SccProvider>
@@ -27,6 +27,6 @@
 		<PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
 		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.23.0" />
-		<PackageReference Include="System.Text.Json" Version="8.0.0" />
+		<PackageReference Include="System.Text.Json" Version="8.0.5" />
 	</ItemGroup>
 </Project>
