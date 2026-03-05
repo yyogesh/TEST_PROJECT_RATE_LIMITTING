@@ -1,0 +1,961 @@
+# Application Insights KQL Queries Guide
+
+This document provides comprehensive Kusto Query Language (KQL) queries to analyze telemetry data captured by the SEB.FPE.Telemetry middleware in Azure Application Insights.
+
+## Table of Contents
+
+1. [Basic Request Queries](#basic-request-queries)
+2. [Exception Analysis](#exception-analysis)
+3. [Performance Monitoring](#performance-monitoring)
+4. [Audit & User Identity](#audit--user-identity)
+5. [Error Analysis](#error-analysis)
+6. [Correlation ID Tracking](#correlation-id-tracking)
+7. [Controller & Action Analysis](#controller--action-analysis)
+8. [Response Time Analysis](#response-time-analysis)
+9. [Status Code Analysis](#status-code-analysis)
+10. [Request/Response Body Analysis](#requestresponse-body-analysis)
+11. [Client & IP Analysis](#client--ip-analysis)
+12. [Advanced Analytics](#advanced-analytics)
+
+---
+
+## Basic Request Queries
+
+### 1. All Requests (Last 24 Hours)
+```kql
+requests
+| where timestamp > ago(24h)
+| project timestamp, name, url, resultCode, duration, 
+    customDimensions.HttpMethod, customDimensions.RequestPath,
+    customDimensions.CorrelationId, customDimensions.ClientIpAddress
+| order by timestamp desc
+```
+
+### 2. Requests by HTTP Method
+```kql
+requests
+| where timestamp > ago(24h)
+| extend HttpMethod = tostring(customDimensions.HttpMethod)
+| summarize RequestCount = count() by HttpMethod
+| order by RequestCount desc
+```
+
+### 3. Requests by Endpoint/Path
+```kql
+requests
+| where timestamp > ago(24h)
+| extend RequestPath = tostring(customDimensions.RequestPath)
+| summarize 
+    RequestCount = count(),
+    AvgDuration = avg(duration),
+    MaxDuration = max(duration),
+    MinDuration = min(duration)
+    by RequestPath
+| order by RequestCount desc
+```
+
+### 4. Recent Requests with Full Details
+```kql
+requests
+| where timestamp > ago(1h)
+| project timestamp, 
+    Method = tostring(customDimensions.HttpMethod),
+    Path = tostring(customDimensions.RequestPath),
+    StatusCode = resultCode,
+    Duration = duration,
+    CorrelationId = tostring(customDimensions.CorrelationId),
+    TraceId = tostring(customDimensions.TraceId),
+    ClientIP = tostring(customDimensions.ClientIpAddress),
+    UserAgent = tostring(customDimensions.UserAgent),
+    Controller = tostring(customDimensions.Controller),
+    Action = tostring(customDimensions.Action)
+| order by timestamp desc
+| take 100
+```
+
+---
+
+## Exception Analysis
+
+### 5. All Exceptions (Last 24 Hours)
+```kql
+exceptions
+| where timestamp > ago(24h)
+| project timestamp, 
+    ExceptionType = tostring(customDimensions.ExceptionType),
+    ExceptionMessage = tostring(customDimensions.ExceptionMessage),
+    RequestPath = tostring(customDimensions.RequestPath),
+    RequestMethod = tostring(customDimensions.RequestMethod),
+    CorrelationId = tostring(customDimensions.CorrelationId),
+    LineNumber = tostring(customDimensions.ExceptionLineNumber),
+    FileName = tostring(customDimensions.ExceptionFileName),
+    StackTrace = tostring(customDimensions.StackTrace)
+| order by timestamp desc
+```
+
+### 6. Exception Count by Type
+```kql
+exceptions
+| where timestamp > ago(24h)
+| extend ExceptionType = tostring(customDimensions.ExceptionType)
+| summarize ExceptionCount = count() by ExceptionType
+| order by ExceptionCount desc
+```
+
+### 7. Exceptions with Line Numbers and File Names
+```kql
+exceptions
+| where timestamp > ago(24h)
+| where isnotempty(customDimensions.ExceptionLineNumber)
+| project timestamp,
+    ExceptionType = tostring(customDimensions.ExceptionType),
+    ExceptionMessage = tostring(customDimensions.ExceptionMessage),
+    FileName = tostring(customDimensions.ExceptionFileName),
+    LineNumber = tostring(customDimensions.ExceptionLineNumber),
+    RequestPath = tostring(customDimensions.RequestPath),
+    CorrelationId = tostring(customDimensions.CorrelationId)
+| order by timestamp desc
+```
+
+### 8. Exceptions with Inner Exception Details
+```kql
+exceptions
+| where timestamp > ago(24h)
+| where isnotempty(customDimensions.InnerExceptionType)
+| project timestamp,
+    ExceptionType = tostring(customDimensions.ExceptionType),
+    ExceptionMessage = tostring(customDimensions.ExceptionMessage),
+    InnerExceptionType = tostring(customDimensions.InnerExceptionType),
+    InnerExceptionMessage = tostring(customDimensions.InnerExceptionMessage),
+    InnerExceptionLineNumber = tostring(customDimensions.InnerExceptionLineNumber),
+    RequestPath = tostring(customDimensions.RequestPath)
+| order by timestamp desc
+```
+
+### 9. Exceptions by Request Path
+```kql
+exceptions
+| where timestamp > ago(24h)
+| extend RequestPath = tostring(customDimensions.RequestPath)
+| summarize ExceptionCount = count() by RequestPath
+| order by ExceptionCount desc
+```
+
+### 10. Aggregate Exceptions (Multiple Inner Exceptions)
+```kql
+exceptions
+| where timestamp > ago(24h)
+| where isnotempty(customDimensions.AggregateInnerExceptions)
+| project timestamp,
+    ExceptionType = tostring(customDimensions.ExceptionType),
+    AggregateInnerExceptions = tostring(customDimensions.AggregateInnerExceptions),
+    RequestPath = tostring(customDimensions.RequestPath)
+| order by timestamp desc
+```
+
+---
+
+## Performance Monitoring
+
+### 11. Average Response Time by Endpoint
+```kql
+requests
+| where timestamp > ago(24h)
+| extend RequestPath = tostring(customDimensions.RequestPath)
+| extend TotalDurationMs = todouble(customDimensions.TotalDurationMs)
+| summarize 
+    RequestCount = count(),
+    AvgDuration = avg(TotalDurationMs),
+    P50Duration = percentile(TotalDurationMs, 50),
+    P95Duration = percentile(TotalDurationMs, 95),
+    P99Duration = percentile(TotalDurationMs, 99),
+    MaxDuration = max(TotalDurationMs)
+    by RequestPath
+| order by AvgDuration desc
+```
+
+### 12. Slow Requests (Over 1 Second)
+```kql
+requests
+| where timestamp > ago(24h)
+| extend TotalDurationMs = todouble(customDimensions.TotalDurationMs)
+| where TotalDurationMs > 1000
+| project timestamp,
+    Method = tostring(customDimensions.HttpMethod),
+    Path = tostring(customDimensions.RequestPath),
+    Duration = TotalDurationMs,
+    StatusCode = resultCode,
+    CorrelationId = tostring(customDimensions.CorrelationId)
+| order by Duration desc
+```
+
+### 13. Response Time Breakdown
+```kql
+requests
+| where timestamp > ago(24h)
+| extend 
+    TotalDuration = todouble(customDimensions.TotalDurationMs),
+    ResponseDuration = todouble(customDimensions.ResponseDurationMs),
+    TimeBetweenRequestAndResponse = todouble(customDimensions.TimeBetweenRequestAndResponseMs)
+| project timestamp,
+    RequestPath = tostring(customDimensions.RequestPath),
+    TotalDuration,
+    ResponseDuration,
+    TimeBetweenRequestAndResponse,
+    CorrelationId = tostring(customDimensions.CorrelationId)
+| order by TotalDuration desc
+| take 50
+```
+
+### 14. Performance Trends (Hourly)
+```kql
+requests
+| where timestamp > ago(7d)
+| extend TotalDurationMs = todouble(customDimensions.TotalDurationMs)
+| summarize 
+    AvgDuration = avg(TotalDurationMs),
+    P95Duration = percentile(TotalDurationMs, 95),
+    RequestCount = count()
+    by bin(timestamp, 1h)
+| order by timestamp asc
+| render timechart
+```
+
+### 15. Requests by Duration Ranges
+```kql
+requests
+| where timestamp > ago(24h)
+| extend TotalDurationMs = todouble(customDimensions.TotalDurationMs)
+| extend DurationCategory = case(
+    TotalDurationMs < 100, "Fast (<100ms)",
+    TotalDurationMs < 500, "Normal (100-500ms)",
+    TotalDurationMs < 1000, "Slow (500ms-1s)",
+    TotalDurationMs < 5000, "Very Slow (1s-5s)",
+    "Extremely Slow (>5s)")
+| summarize RequestCount = count() by DurationCategory
+| order by RequestCount desc
+```
+
+---
+
+## Audit & User Identity
+
+### 16. Requests by Authenticated Users
+```kql
+requests
+| where timestamp > ago(24h)
+| where tostring(customDimensions.IsAuthenticated) == "True"
+| project timestamp,
+    UserName = tostring(customDimensions.UserName),
+    UserId = tostring(customDimensions.UserId),
+    UserEmail = tostring(customDimensions.UserEmail),
+    TenantId = tostring(customDimensions.TenantId),
+    RequestPath = tostring(customDimensions.RequestPath),
+    HttpMethod = tostring(customDimensions.HttpMethod),
+    StatusCode = resultCode,
+    CorrelationId = tostring(customDimensions.CorrelationId)
+| order by timestamp desc
+```
+
+### 17. User Activity Summary
+```kql
+requests
+| where timestamp > ago(24h)
+| where isnotempty(customDimensions.UserId)
+| extend UserId = tostring(customDimensions.UserId)
+| summarize 
+    RequestCount = count(),
+    UniqueEndpoints = dcount(tostring(customDimensions.RequestPath)),
+    LastActivity = max(timestamp)
+    by UserId
+| order by RequestCount desc
+```
+
+### 18. Requests by User Roles
+```kql
+requests
+| where timestamp > ago(24h)
+| where isnotempty(customDimensions.UserRoles)
+| extend UserRoles = tostring(customDimensions.UserRoles)
+| extend UserId = tostring(customDimensions.UserId)
+| project timestamp, UserId, UserRoles, 
+    RequestPath = tostring(customDimensions.RequestPath),
+    HttpMethod = tostring(customDimensions.HttpMethod)
+| order by timestamp desc
+```
+
+### 19. Tenant-Based Activity
+```kql
+requests
+| where timestamp > ago(24h)
+| where isnotempty(customDimensions.TenantId)
+| extend TenantId = tostring(customDimensions.TenantId)
+| summarize 
+    RequestCount = count(),
+    UniqueUsers = dcount(tostring(customDimensions.UserId)),
+    UniqueEndpoints = dcount(tostring(customDimensions.RequestPath))
+    by TenantId
+| order by RequestCount desc
+```
+
+### 20. User Claims Analysis
+```kql
+requests
+| where timestamp > ago(24h)
+| where isnotempty(customDimensions.UserClaims)
+| project timestamp,
+    UserId = tostring(customDimensions.UserId),
+    UserClaims = tostring(customDimensions.UserClaims),
+    RequestPath = tostring(customDimensions.RequestPath)
+| order by timestamp desc
+| take 50
+```
+
+### 21. Unauthenticated Requests
+```kql
+requests
+| where timestamp > ago(24h)
+| where tostring(customDimensions.IsAuthenticated) == "False" 
+    or isnull(customDimensions.IsAuthenticated)
+| summarize RequestCount = count() 
+    by RequestPath = tostring(customDimensions.RequestPath)
+| order by RequestCount desc
+```
+
+---
+
+## Error Analysis
+
+### 22. Failed Requests (4xx and 5xx)
+```kql
+requests
+| where timestamp > ago(24h)
+| where resultCode >= 400
+| project timestamp,
+    Method = tostring(customDimensions.HttpMethod),
+    Path = tostring(customDimensions.RequestPath),
+    StatusCode = resultCode,
+    Duration = todouble(customDimensions.TotalDurationMs),
+    CorrelationId = tostring(customDimensions.CorrelationId),
+    ClientIP = tostring(customDimensions.ClientIpAddress)
+| order by timestamp desc
+```
+
+### 23. Error Rate by Endpoint
+```kql
+requests
+| where timestamp > ago(24h)
+| extend RequestPath = tostring(customDimensions.RequestPath)
+| extend IsError = resultCode >= 400
+| summarize 
+    TotalRequests = count(),
+    ErrorCount = sum(iff(IsError, 1, 0)),
+    ErrorRate = (sum(iff(IsError, 1, 0)) * 100.0) / count()
+    by RequestPath
+| where ErrorCount > 0
+| order by ErrorRate desc
+```
+
+### 24. Error Status Code Distribution
+```kql
+requests
+| where timestamp > ago(24h)
+| where resultCode >= 400
+| summarize ErrorCount = count() by resultCode
+| order by ErrorCount desc
+```
+
+### 25. Errors with Request Details
+```kql
+requests
+| where timestamp > ago(24h)
+| where resultCode >= 400
+| project timestamp,
+    Method = tostring(customDimensions.HttpMethod),
+    Path = tostring(customDimensions.RequestPath),
+    StatusCode = resultCode,
+    QueryString = tostring(customDimensions.RequestQueryString),
+    RequestBody = tostring(customDimensions.RequestBody),
+    CorrelationId = tostring(customDimensions.CorrelationId),
+    UserId = tostring(customDimensions.UserId)
+| order by timestamp desc
+```
+
+### 26. 500 Internal Server Errors
+```kql
+requests
+| where timestamp > ago(24h)
+| where resultCode == 500
+| project timestamp,
+    Method = tostring(customDimensions.HttpMethod),
+    Path = tostring(customDimensions.RequestPath),
+    CorrelationId = tostring(customDimensions.CorrelationId),
+    ClientIP = tostring(customDimensions.ClientIpAddress),
+    UserAgent = tostring(customDimensions.UserAgent)
+| order by timestamp desc
+```
+
+---
+
+## Correlation ID Tracking
+
+### 27. Track Request by Correlation ID
+```kql
+let correlationId = "YOUR_CORRELATION_ID_HERE";
+requests
+| where timestamp > ago(7d)
+| where tostring(customDimensions.CorrelationId) == correlationId
+| project timestamp,
+    Method = tostring(customDimensions.HttpMethod),
+    Path = tostring(customDimensions.RequestPath),
+    StatusCode = resultCode,
+    Duration = todouble(customDimensions.TotalDurationMs),
+    TraceId = tostring(customDimensions.TraceId)
+| order by timestamp asc
+```
+
+### 28. All Telemetry for a Correlation ID (Requests + Exceptions)
+```kql
+let correlationId = "YOUR_CORRELATION_ID_HERE";
+union
+    (requests | where tostring(customDimensions.CorrelationId) == correlationId),
+    (exceptions | where tostring(customDimensions.CorrelationId) == correlationId)
+| project timestamp,
+    Type = iff(itemType == "request", "Request", "Exception"),
+    Name = coalesce(name, type),
+    Details = coalesce(
+        strcat("Path: ", tostring(customDimensions.RequestPath), " | Status: ", tostring(resultCode)),
+        strcat("Exception: ", tostring(customDimensions.ExceptionMessage))
+    )
+| order by timestamp asc
+```
+
+### 29. Correlation ID Usage Statistics
+```kql
+requests
+| where timestamp > ago(24h)
+| where isnotempty(customDimensions.CorrelationId)
+| extend CorrelationId = tostring(customDimensions.CorrelationId)
+| summarize RequestCount = count() by CorrelationId
+| where RequestCount > 1
+| order by RequestCount desc
+| take 20
+```
+
+---
+
+## Controller & Action Analysis
+
+### 30. Requests by Controller
+```kql
+requests
+| where timestamp > ago(24h)
+| where isnotempty(customDimensions.Controller)
+| extend Controller = tostring(customDimensions.Controller)
+| summarize 
+    RequestCount = count(),
+    AvgDuration = avg(todouble(customDimensions.TotalDurationMs)),
+    ErrorCount = sum(iff(resultCode >= 400, 1, 0))
+    by Controller
+| order by RequestCount desc
+```
+
+### 31. Requests by Controller and Action
+```kql
+requests
+| where timestamp > ago(24h)
+| where isnotempty(customDimensions.Controller)
+| extend 
+    Controller = tostring(customDimensions.Controller),
+    Action = tostring(customDimensions.Action)
+| summarize 
+    RequestCount = count(),
+    AvgDuration = avg(todouble(customDimensions.TotalDurationMs))
+    by Controller, Action
+| order by RequestCount desc
+```
+
+### 32. Controller Performance Analysis
+```kql
+requests
+| where timestamp > ago(24h)
+| where isnotempty(customDimensions.Controller)
+| extend 
+    Controller = tostring(customDimensions.Controller),
+    TotalDurationMs = todouble(customDimensions.TotalDurationMs)
+| summarize 
+    RequestCount = count(),
+    AvgDuration = avg(TotalDurationMs),
+    P95Duration = percentile(TotalDurationMs, 95),
+    P99Duration = percentile(TotalDurationMs, 99),
+    MaxDuration = max(TotalDurationMs)
+    by Controller
+| order by AvgDuration desc
+```
+
+### 33. Actions with Errors
+```kql
+requests
+| where timestamp > ago(24h)
+| where resultCode >= 400
+| where isnotempty(customDimensions.Controller)
+| extend 
+    Controller = tostring(customDimensions.Controller),
+    Action = tostring(customDimensions.Action)
+| summarize ErrorCount = count() by Controller, Action
+| order by ErrorCount desc
+```
+
+---
+
+## Response Time Analysis
+
+### 34. Response Time Percentiles
+```kql
+requests
+| where timestamp > ago(24h)
+| extend TotalDurationMs = todouble(customDimensions.TotalDurationMs)
+| summarize 
+    P50 = percentile(TotalDurationMs, 50),
+    P75 = percentile(TotalDurationMs, 75),
+    P90 = percentile(TotalDurationMs, 90),
+    P95 = percentile(TotalDurationMs, 95),
+    P99 = percentile(TotalDurationMs, 99),
+    Max = max(TotalDurationMs),
+    Avg = avg(TotalDurationMs)
+```
+
+### 35. Response Time Trends
+```kql
+requests
+| where timestamp > ago(7d)
+| extend TotalDurationMs = todouble(customDimensions.TotalDurationMs)
+| summarize 
+    AvgDuration = avg(TotalDurationMs),
+    P95Duration = percentile(TotalDurationMs, 95)
+    by bin(timestamp, 1h)
+| order by timestamp asc
+| render timechart
+```
+
+### 36. Response Time by Time of Day
+```kql
+requests
+| where timestamp > ago(7d)
+| extend TotalDurationMs = todouble(customDimensions.TotalDurationMs)
+| extend HourOfDay = datetime_part("hour", timestamp)
+| summarize 
+    AvgDuration = avg(TotalDurationMs),
+    RequestCount = count()
+    by HourOfDay
+| order by HourOfDay asc
+| render columnchart
+```
+
+---
+
+## Status Code Analysis
+
+### 37. Status Code Distribution
+```kql
+requests
+| where timestamp > ago(24h)
+| summarize RequestCount = count() by resultCode
+| order by resultCode asc
+```
+
+### 38. Status Code Trends
+```kql
+requests
+| where timestamp > ago(7d)
+| extend StatusCategory = case(
+    resultCode < 200, "1xx",
+    resultCode < 300, "2xx",
+    resultCode < 400, "3xx",
+    resultCode < 500, "4xx",
+    "5xx")
+| summarize RequestCount = count() 
+    by bin(timestamp, 1h), StatusCategory
+| order by timestamp asc
+| render timechart
+```
+
+### 39. Success vs Failure Rate
+```kql
+requests
+| where timestamp > ago(24h)
+| extend IsSuccess = resultCode < 400
+| summarize 
+    TotalRequests = count(),
+    SuccessCount = sum(iff(IsSuccess, 1, 0)),
+    FailureCount = sum(iff(IsSuccess, 0, 1)),
+    SuccessRate = (sum(iff(IsSuccess, 1, 0)) * 100.0) / count()
+```
+
+---
+
+## Request/Response Body Analysis
+
+### 40. Requests with Request Body
+```kql
+requests
+| where timestamp > ago(24h)
+| where isnotempty(customDimensions.RequestBody)
+| project timestamp,
+    Method = tostring(customDimensions.HttpMethod),
+    Path = tostring(customDimensions.RequestPath),
+    RequestBody = tostring(customDimensions.RequestBody),
+    StatusCode = resultCode,
+    CorrelationId = tostring(customDimensions.CorrelationId)
+| order by timestamp desc
+| take 50
+```
+
+### 41. Large Request Bodies
+```kql
+requests
+| where timestamp > ago(24h)
+| where isnotempty(customDimensions.RequestBody)
+| extend RequestBodyLength = strlen(tostring(customDimensions.RequestBody))
+| where RequestBodyLength > 1000
+| project timestamp,
+    Path = tostring(customDimensions.RequestPath),
+    RequestBodyLength,
+    RequestBody = substring(tostring(customDimensions.RequestBody), 0, 500),
+    CorrelationId = tostring(customDimensions.CorrelationId)
+| order by RequestBodyLength desc
+```
+
+### 42. Request Query Parameters Analysis
+```kql
+requests
+| where timestamp > ago(24h)
+| where isnotempty(customDimensions.RequestQueryParameters)
+| project timestamp,
+    Path = tostring(customDimensions.RequestPath),
+    QueryParameters = tostring(customDimensions.RequestQueryParameters),
+    CorrelationId = tostring(customDimensions.CorrelationId)
+| order by timestamp desc
+| take 50
+```
+
+### 43. Form Data Analysis
+```kql
+requests
+| where timestamp > ago(24h)
+| where isnotempty(customDimensions.RequestFormData)
+| project timestamp,
+    Path = tostring(customDimensions.RequestPath),
+    FormData = tostring(customDimensions.RequestFormData),
+    CorrelationId = tostring(customDimensions.CorrelationId)
+| order by timestamp desc
+| take 50
+```
+
+---
+
+## Client & IP Analysis
+
+### 44. Requests by Client IP
+```kql
+requests
+| where timestamp > ago(24h)
+| extend ClientIP = tostring(customDimensions.ClientIpAddress)
+| summarize 
+    RequestCount = count(),
+    UniqueEndpoints = dcount(tostring(customDimensions.RequestPath)),
+    ErrorCount = sum(iff(resultCode >= 400, 1, 0))
+    by ClientIP
+| order by RequestCount desc
+```
+
+### 45. User Agent Analysis
+```kql
+requests
+| where timestamp > ago(24h)
+| extend UserAgent = tostring(customDimensions.UserAgent)
+| summarize RequestCount = count() by UserAgent
+| order by RequestCount desc
+| take 20
+```
+
+### 46. Suspicious Activity (High Error Rate from Single IP)
+```kql
+requests
+| where timestamp > ago(24h)
+| extend ClientIP = tostring(customDimensions.ClientIpAddress)
+| extend IsError = resultCode >= 400
+| summarize 
+    TotalRequests = count(),
+    ErrorCount = sum(iff(IsError, 1, 0)),
+    ErrorRate = (sum(iff(IsError, 1, 0)) * 100.0) / count()
+    by ClientIP
+| where ErrorRate > 50 and TotalRequests > 10
+| order by ErrorRate desc
+```
+
+---
+
+## Advanced Analytics
+
+### 47. Request Flow Analysis (End-to-End)
+```kql
+requests
+| where timestamp > ago(24h)
+| extend 
+    TotalDuration = todouble(customDimensions.TotalDurationMs),
+    ResponseDuration = todouble(customDimensions.ResponseDurationMs),
+    TimeBetweenRequestAndResponse = todouble(customDimensions.TimeBetweenRequestAndResponseMs)
+| project timestamp,
+    Path = tostring(customDimensions.RequestPath),
+    TotalDuration,
+    ResponseDuration,
+    TimeBetweenRequestAndResponse,
+    ProcessingTime = TotalDuration - ResponseDuration - TimeBetweenRequestAndResponse,
+    CorrelationId = tostring(customDimensions.CorrelationId)
+| order by TotalDuration desc
+| take 50
+```
+
+### 48. Peak Usage Times
+```kql
+requests
+| where timestamp > ago(7d)
+| extend HourOfDay = datetime_part("hour", timestamp)
+| summarize RequestCount = count() by HourOfDay
+| order by HourOfDay asc
+| render columnchart
+```
+
+### 49. Endpoint Health Score
+```kql
+requests
+| where timestamp > ago(24h)
+| extend RequestPath = tostring(customDimensions.RequestPath)
+| extend 
+    IsSuccess = resultCode < 400,
+    IsFast = todouble(customDimensions.TotalDurationMs) < 500
+| summarize 
+    TotalRequests = count(),
+    SuccessRate = (sum(iff(IsSuccess, 1, 0)) * 100.0) / count(),
+    FastResponseRate = (sum(iff(IsFast, 1, 0)) * 100.0) / count(),
+    HealthScore = ((sum(iff(IsSuccess, 1, 0)) * 100.0) / count()) * 0.7 + 
+                  ((sum(iff(IsFast, 1, 0)) * 100.0) / count()) * 0.3
+    by RequestPath
+| where TotalRequests > 10
+| order by HealthScore asc
+```
+
+### 50. Exception-to-Request Correlation
+```kql
+let exceptionsWithRequests = 
+    exceptions
+    | where timestamp > ago(24h)
+    | extend CorrelationId = tostring(customDimensions.CorrelationId)
+    | join kind=inner (
+        requests
+        | where timestamp > ago(24h)
+        | extend CorrelationId = tostring(customDimensions.CorrelationId)
+    ) on CorrelationId
+    | project 
+        ExceptionTime = timestamp,
+        ExceptionType = tostring(customDimensions.ExceptionType),
+        ExceptionMessage = tostring(customDimensions.ExceptionMessage),
+        RequestPath = tostring(customDimensions.RequestPath),
+        RequestMethod = tostring(customDimensions.RequestMethod),
+        RequestStatusCode = resultCode,
+        CorrelationId
+    | order by ExceptionTime desc;
+exceptionsWithRequests
+```
+
+### 51. Request Patterns (Most Common Sequences)
+```kql
+requests
+| where timestamp > ago(24h)
+| where isnotempty(customDimensions.UserId)
+| extend 
+    UserId = tostring(customDimensions.UserId),
+    RequestPath = tostring(customDimensions.RequestPath)
+| order by UserId, timestamp asc
+| extend NextRequest = next(RequestPath)
+| where isnotempty(NextRequest)
+| summarize RequestCount = count() 
+    by RequestPath, NextRequest
+| order by RequestCount desc
+| take 20
+```
+
+### 52. Content Type Analysis
+```kql
+requests
+| where timestamp > ago(24h)
+| extend 
+    RequestContentType = tostring(customDimensions.RequestContentType),
+    ResponseContentType = tostring(customDimensions.ResponseContentType)
+| summarize 
+    RequestCount = count(),
+    AvgDuration = avg(todouble(customDimensions.TotalDurationMs))
+    by RequestContentType, ResponseContentType
+| order by RequestCount desc
+```
+
+### 53. Request Size Analysis
+```kql
+requests
+| where timestamp > ago(24h)
+| extend 
+    RequestContentLength = tolong(customDimensions.RequestContentLength),
+    ResponseContentLength = tolong(customDimensions.ResponseContentLength)
+| summarize 
+    RequestCount = count(),
+    AvgRequestSize = avg(RequestContentLength),
+    AvgResponseSize = avg(ResponseContentLength),
+    MaxRequestSize = max(RequestContentLength),
+    MaxResponseSize = max(ResponseContentLength)
+    by RequestPath = tostring(customDimensions.RequestPath)
+| order by AvgRequestSize desc
+```
+
+### 54. Complete Request Audit Trail
+```kql
+let correlationId = "YOUR_CORRELATION_ID_HERE";
+union
+    (requests | where tostring(customDimensions.CorrelationId) == correlationId),
+    (exceptions | where tostring(customDimensions.CorrelationId) == correlationId)
+| project timestamp,
+    Type = iff(itemType == "request", "Request", "Exception"),
+    Method = tostring(customDimensions.HttpMethod),
+    Path = tostring(customDimensions.RequestPath),
+    StatusCode = tostring(resultCode),
+    ExceptionType = tostring(customDimensions.ExceptionType),
+    ExceptionMessage = tostring(customDimensions.ExceptionMessage),
+    UserId = tostring(customDimensions.UserId),
+    UserName = tostring(customDimensions.UserName),
+    ClientIP = tostring(customDimensions.ClientIpAddress),
+    Duration = todouble(customDimensions.TotalDurationMs),
+    RequestBody = tostring(customDimensions.RequestBody),
+    QueryParameters = tostring(customDimensions.RequestQueryParameters),
+    Controller = tostring(customDimensions.Controller),
+    Action = tostring(customDimensions.Action)
+| order by timestamp asc
+```
+
+---
+
+## Quick Reference: Custom Dimensions
+
+The following custom dimensions are available in Application Insights:
+
+### Request Properties
+- `HttpMethod` - HTTP method (GET, POST, etc.)
+- `RequestPath` - Request path/endpoint
+- `RequestQueryString` - Query string (sensitive data masked)
+- `RequestQueryParameters` - JSON of query parameters
+- `RequestRouteParameters` - JSON of route parameters
+- `RequestFormData` - JSON of form data
+- `RequestHeaders` - JSON of request headers (if enabled)
+- `RequestImportantHeaders` - Important headers only
+- `RequestBody` - Request body content (if enabled and within size limit)
+- `RequestScheme` - HTTP scheme (http/https)
+- `RequestHost` - Host name
+- `RequestProtocol` - HTTP protocol version
+- `RequestContentType` - Content type
+- `RequestContentLength` - Content length
+- `RequestTimestamp` - Request timestamp
+- `ResponseStatusCode` - HTTP status code
+- `ResponseContentType` - Response content type
+- `ResponseContentLength` - Response content length
+- `ResponseHeaders` - JSON of response headers (if enabled)
+- `ResponseImportantHeaders` - Important headers only
+- `TotalDurationMs` - Total request duration in milliseconds
+- `ResponseDurationMs` - Response generation duration
+- `TimeBetweenRequestAndResponseMs` - Time between request and response start
+- `RequestStartTime` - Request start timestamp
+- `ResponseStartTime` - Response start timestamp
+- `ResponseEndTime` - Response end timestamp
+
+### User Identity Properties (if enabled)
+- `IsAuthenticated` - Boolean string
+- `AuthenticationType` - Authentication type
+- `UserName` - Username
+- `UserId` - User ID from claims
+- `TenantId` - Tenant ID from claims
+- `UserEmail` - User email from claims
+- `UserRoles` - JSON array of user roles
+- `UserClaims` - JSON object of all user claims
+
+### Controller/Action Properties
+- `Controller` - Controller name
+- `Action` - Action name
+- `Area` - Area name (if applicable)
+
+### Tracking Properties
+- `CorrelationId` - Correlation ID for request tracking
+- `TraceId` - ASP.NET Core trace identifier
+
+### Client Properties
+- `ClientIpAddress` - Client IP address
+- `UserAgent` - User agent string
+
+### Exception Properties
+- `ExceptionType` - Full exception type name
+- `ExceptionMessage` - Exception message
+- `ExceptionSource` - Exception source
+- `ExceptionHResult` - Exception HResult
+- `ExceptionTargetSite` - Target site/method
+- `StackTrace` - Full stack trace (if detailed info enabled)
+- `ExceptionLineNumber` - Line number where exception occurred
+- `ExceptionFileName` - File name where exception occurred
+- `ExceptionMethod` - Method name where exception occurred
+- `InnerExceptionType` - Inner exception type
+- `InnerExceptionMessage` - Inner exception message
+- `InnerExceptionStackTrace` - Inner exception stack trace
+- `InnerExceptionLineNumber` - Inner exception line number
+- `AggregateInnerExceptions` - JSON array of aggregate exception inner exceptions
+- `DurationAtException` - Request duration when exception occurred
+
+---
+
+## Tips for Using These Queries
+
+1. **Time Range**: Adjust `ago(24h)` to your desired time range (e.g., `ago(7d)`, `ago(1h)`, `ago(30d)`)
+
+2. **Correlation ID**: Replace `"YOUR_CORRELATION_ID_HERE"` with actual correlation IDs from your logs
+
+3. **Performance**: For large datasets, add `| take 1000` or similar limits
+
+4. **Customization**: Combine queries to create custom dashboards
+
+5. **Alerts**: Use these queries as the basis for Application Insights alerts
+
+6. **Export**: Export query results to CSV/Excel for further analysis
+
+7. **Dashboards**: Pin query results to Azure dashboards for monitoring
+
+---
+
+## Example: Creating an Alert
+
+To create an alert based on these queries:
+
+1. Go to Application Insights → Alerts
+2. Create a new alert rule
+3. Select "Log" as the signal type
+4. Use a query like:
+```kql
+requests
+| where timestamp > ago(5m)
+| where resultCode >= 500
+| summarize ErrorCount = count()
+| where ErrorCount > 10
+```
+5. Set threshold and action groups
+
+---
+
+## Support
+
+For issues or questions about these queries, refer to:
+- [KQL Documentation](https://docs.microsoft.com/azure/data-explorer/kusto/query/)
+- [Application Insights Query Documentation](https://docs.microsoft.com/azure/azure-monitor/logs/log-query-overview)
